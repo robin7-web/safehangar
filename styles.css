@@ -16,7 +16,7 @@ button:focus-visible,.nav-link:focus-visible{outline:2px solid var(--blue);outli
 @media(max-width:700px){.quick-actions{grid-template-columns:1fr}}
 
 /* Logo + photo backgrounds */
-.brand-logo{width:46px;height:46px;border-radius:50%;flex:none;display:block}
+.brand-logo{width:46px;height:46px;object-fit:contain}
 .brand{gap:12px}
 .welcome{background-image:linear-gradient(105deg,rgba(23,45,117,.96) 0%,rgba(23,45,117,.82) 45%,rgba(49,89,201,.35) 100%),url(assets/hangar-trainees.jpg);background-size:cover;background-position:center 60%}
 .page-intro{--photo:url(assets/engine-inspection.jpg);--pos:center 40%;background-image:linear-gradient(100deg,rgba(23,45,117,.95) 0%,rgba(23,45,117,.80) 55%,rgba(23,45,117,.45) 100%),var(--photo);background-size:cover;background-position:var(--pos);color:#fff;border-radius:15px;padding:26px 30px;min-height:104px}
@@ -390,4 +390,17 @@ html, body {
         margin-left: 0;
         padding: 0 14px;
     }
+}
+.login-logo img {
+  width: 150px;
+  height: auto;
+  display: block;
+  margin: 0 auto 10px;
+  object-fit: contain;
+}
+.brand-icon img {
+  width: 46px;
+  height: 46px;
+  display: block;
+  object-fit: contain;
 }
