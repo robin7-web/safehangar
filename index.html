@@ -132,7 +132,19 @@
       <div class="content-grid">
         <article class="panel">
           <div class="panel-heading"><div><h3>Recent inspections</h3><p>Latest aircraft inspection records</p></div><button class="text-btn" onclick="showPage('inspections')">View all →</button></div>
-          <div class="table-wrap"><table><thead><tr><th>AIRCRAFT</th><th>INSPECTION TYPE</th><th>DATE</th><th>STATUS</th></tr></thead><tbody>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>AIRCRAFT</th>
+                  <th>INSPECTION TYPE</th>
+                  <th>DATE</th><th>STATUS</th>
+                </tr>
+              </thead>
+              <tbody id="recentRows"></tbody>
+            </table>
+          </div>
+
             <tr><td><strong>RP-C1234</strong><small>Cessna 172</small></td><td>Pre-flight check</td><td>Nov 15, 2026</td><td><span class="pill success">Passed</span></td></tr>
             <tr><td><strong>RP-C5678</strong><small>Piper PA-28</small></td><td>Engine inspection</td><td>Nov 14, 2026</td><td><span class="pill warning">Needs review</span></td></tr>
             <tr><td><strong>RP-C9012</strong><small>Cessna 152</small></td><td>Structural check</td><td>Nov 13, 2026</td><td><span class="pill danger">Failed</span></td></tr>
