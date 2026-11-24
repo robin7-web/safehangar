@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SafeHangar | Aircraft Safety System</title>
-  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <link rel="icon" type="image/png" href="./assets/favicon.png?v=2">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -131,12 +131,43 @@
         </div>
         <button class="primary-btn" onclick="showPage('inspections')">＋ New inspection</button>
       </div>
+      
       <div class="stat-grid">
-        <article class="stat-card"><span class="stat-icon blue">✈</span><p>Registered aircraft</p><strong id="aircraftCount">12</strong><small>Aircraft in the system</small></article>
-        <article class="stat-card"><span class="stat-icon amber">◷</span><p>Pending inspections</p><strong>08</strong><small>Awaiting inspection</small></article>
-        <article class="stat-card"><span class="stat-icon green">✓</span><p>Completed inspections</p><strong>34</strong><small>This month</small></article>
-        <article class="stat-card"><span class="stat-icon red">⚑</span><p>Open safety alerts</p><strong id="alertCount">02</strong><small>Require attention</small></article>
+
+        <!-- Registered Aircraft -->
+        <article class="stat-card clickable-card" role="button" tabindex="0" onclick="showPage('aircraft')">
+          <span class="stat-icon blue">✈</span>
+          <p>Registered aircraft</p>
+          <strong id="aircraftCount">12</strong>
+          <small>Aircraft in the system</small>
+        </article>
+
+        <!-- Pending Inspections -->
+        <article class="stat-card clickable-card" role="button" tabindex="0" onclick="showPage('inspections')">
+          <span class="stat-icon amber">◷</span>
+          <p>Pending inspections</p>
+          <strong>08</strong>
+          <small>Awaiting inspection</small>
+        </article>
+
+        <!-- Completed Inspections -->
+        <article class="stat-card clickable-card" role="button" tabindex="0" onclick="showPage('recent-inspections')">
+          <span class="stat-icon green">✓</span>
+          <p>Completed inspections</p>
+          <strong>34</strong>
+          <small>This month</small>
+        </article>
+
+        <!-- Open Safety Alerts -->
+        <article class="stat-card clickable-card" role="button" tabindex="0" onclick="showPage('alerts')">
+          <span class="stat-icon red">⚑</span>
+          <p>Open safety alerts</p>
+          <strong id="alertCount">02</strong>
+          <small>Require attention</small>
+        </article>
+
       </div>
+
       <div class="content-grid">
         <article class="panel">
           <div class="panel-heading"><div><h3>Recent inspections</h3><p>Latest aircraft inspection records</p></div><button class="text-btn" onclick="showPage('inspections')">View all →</button></div>

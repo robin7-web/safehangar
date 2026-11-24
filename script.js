@@ -31,7 +31,18 @@ async function api(action, payload = {}) {
 }
 
 /* ---------- Page navigation (unchanged behaviour) ---------- */
-const pageNames = { dashboard: "Dashboard", aircraft: "Aircraft", inspections: "Inspections", reports: "Reports", alerts: "Safety Alerts", hazards: "Hazard Reports", facilities: "Hangar Directory", users: "User Management", settings: "Settings" };
+const pageNames = {
+  dashboard: "Dashboard",
+  aircraft: "Aircraft",
+  inspections: "Inspections",
+  "recent-inspections": "Recent Inspections",
+  reports: "Reports",
+  alerts: "Safety Alerts",
+  hazards: "Hazard Reports",
+  facilities: "Hangar Directory",
+  users: "User Management",
+  settings: "Settings"
+};
 function showPage(name) {
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active-page"));
   const target = document.getElementById(name);
