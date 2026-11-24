@@ -115,22 +115,14 @@ const DEMO = {
 
 /* ---------- Rendering ---------- */
 function setStatus(online, msg) {
-  state.online = online;
-  const dot = document.getElementById("statusDot");
-  dot.className = "status-dot" + (online ? "" : " offline");
-  const txt = document.getElementById("statusText");
-  txt.textContent = msg;
-  txt.className = "online" + (online ? "" : " offline-text");
-  const footer = document.getElementById("footerMode");
-  if (footer) footer.textContent = online ? "Connected to Google Sheets" : "Offline demo mode";
-  const banner = document.getElementById("offlineBanner");
-  if (banner) banner.classList.toggle("hidden", online);
-  const pill = document.getElementById("connPill");
-  if (pill) {
-    if (online) { pill.textContent = "Live — Google Sheets"; pill.className = "pill success"; }
-    else if (API_URL) { pill.textContent = "Offline — API unreachable"; pill.className = "pill danger"; }
-    else { pill.textContent = "Offline demo mode"; pill.className = "pill warning"; }
-  }
+    const dot = document.getElementById("statusDot");
+    if (dot) dot.className = "status-dot" + (online ? "" : " offline");
+
+    const txt = document.getElementById("statusText");
+    if (txt) {
+        txt.textContent = msg;
+        txt.className = "online" + (online ? "" : " offline-text");
+    }
 }
 
 function setConnPanel(mode, summary, errorText) {
@@ -147,20 +139,55 @@ function setConnPanel(mode, summary, errorText) {
 }
 
 function renderAll() {
-  renderStats(); renderRecent(); renderDashAlerts(); renderAircraft();
-  renderReports(); renderHazards(); renderAlerts(); renderUsers(); renderFacilities();
+  updateDashboardDate();
+  renderStats(); 
+  renderRecent(); 
+  renderDashAlerts(); 
+  renderAircraft();
+  renderReports(); 
+  renderHazards(); 
+  renderAlerts(); 
+  renderUsers(); 
+  renderFacilities();
   updateAlertCounts();
 }
 
 function renderStats() {
-  document.getElementById("todayLabel").textContent =
-    new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "2-digit", year: "numeric" }).toUpperCase();
-  document.getElementById("aircraftCount").textContent = state.aircraft.length;
-  const pending = state.inspections.filter(i => i["Overall Result"] === "Needs review" || i["Overall Result"] === "Failed").length;
+  const todayLabel = document.getElementById("todayLabel");
+  if (todayLabel) {
+    todayLabel.textContent =
+      new Date().toLocaleDateString("en-US", {
+        weekday: "long",
+        month: "long",
+        day: "2-digit",
+        year: "numeric"
+      }).toUpperCase();
+  }
+
+  const aircraftCount = document.getElementById("aircraftCount");
+  if (aircraftCount) {
+    aircraftCount.textContent = state.aircraft.length;
+  }
+
+  const pending = state.inspections.filter(
+    i => i["Overall Result"] === "Needs review" || i["Overall Result"] === "Failed"
+  ).length;
+
   const thisMonth = new Date().toISOString().slice(0, 7);
-  const completed = state.inspections.filter(i => i["Overall Result"] === "Passed" && String(i.Date).slice(0, 7) === thisMonth).length;
-  document.getElementById("pendingCount").textContent = String(pending).padStart(2, "0");
-  document.getElementById("completedCount").textContent = String(completed).padStart(2, "0");
+
+  const completed = state.inspections.filter(
+    i => i["Overall Result"] === "Passed" && String(i.Date).slice(0, 7) === thisMonth
+  ).length;
+
+  const pendingCount = document.getElementById("pendingCount");
+  if (pendingCount) {
+    pendingCount.textContent = String(pending).padStart(2, "0");
+  }
+
+  const completedCount = document.getElementById("completedCount");
+  if (completedCount) {
+    completedCount.textContent = String(completed).padStart(2, "0");
+  }
 }
 
 function openAlertItems() {
@@ -188,9 +215,15 @@ function alertItemHTML(it) {
 }
 
 function renderDashAlerts() {
+  const dashAlerts = document.getElementById("dashAlerts");
+
+  if (!dashAlerts) return;
+
   const items = openAlertItems().slice(0, 3);
-  document.getElementById("dashAlerts").innerHTML = items.length ? items.map(alertItemHTML).join("") :
-    '<p class="helper">No open alerts. All clear.</p>';
+
+  dashAlerts.innerHTML = items.length
+    ? items.map(alertItemHTML).join("")
+    : '<p class="helper">No open alerts. All clear.</p>';
 }
 
 function renderAlerts() {
@@ -210,15 +243,31 @@ function renderRecent() {
 }
 
 function renderAircraft() {
-  const q = document.getElementById("aircraftSearch").value.toLowerCase();
-  const list = state.aircraft.filter(a => (a.Registration + " " + a.Model + " " + a["Serial Number"] + " " + a.Operator).toLowerCase().includes(q));
-  document.getElementById("aircraftRows").innerHTML = list.map(a =>
-    "<tr><td><strong>" + escapeHTML(a.Registration) + "</strong></td><td>" + escapeHTML(a.Model) + "</td><td>" +
-    escapeHTML(a["Serial Number"] || "—") + "</td><td>" + escapeHTML(a.Operator || "—") + "</td><td>" +
-    '<span class="pill ' + (a.Status === "Active" ? "success" : "warning") + '">' + escapeHTML(a.Status || "Active") + "</span></td></tr>"
-  ).join("") || '<tr><td colspan="5">No aircraft match your search.</td></tr>';
-  document.getElementById("aircraftDatalist").innerHTML = state.aircraft.map(a =>
-    '<option value="' + escapeHTML(a.Registration) + '"></option>').join("");
+  const aircraftSearch = document.getElementById("aircraftSearch");
+  const q = aircraftSearch ? aircraftSearch.value.toLowerCase() : "";
+
+  const list = state.aircraft.filter(a =>
+    (a.Registration + " " + a.Model + " " + a["Serial Number"] + " " + a.Operator)
+      .toLowerCase().includes(q)
+  );
+
+  const aircraftRows = document.getElementById("aircraftRows");
+
+  if (aircraftRows) {
+    aircraftRows.innerHTML = list.map(a =>
+      "<tr><td><strong>" + escapeHTML(a.Registration) + "</strong></td><td>" + escapeHTML(a.Model) + "</td><td>" +
+      escapeHTML(a["Serial Number"] || "—") + "</td><td>" + escapeHTML(a.Operator || "—") + "</td><td>" +
+      '<span class="pill ' + (a.Status === "Active" ? "success" : "warning") + '">' + escapeHTML(a.Status || "Active") + "</span></td></tr>"
+    ).join("") || '<tr><td colspan="5">No aircraft match your search.</td></tr>';
+  }
+
+  const aircraftDatalist = document.getElementById("aircraftDatalist");
+
+  if (aircraftDatalist) {
+    aircraftDatalist.innerHTML = state.aircraft.map(a =>
+      '<option value="' + escapeHTML(a.Registration) + '"></option>'
+    ).join("");
+  }
 }
 
 function renderReports() {
@@ -240,7 +289,11 @@ function renderHazards() {
 }
 
 function renderUsers() {
-  document.getElementById("userRows").innerHTML = state.users.map(u =>
+  const userRows = document.getElementById("userRows");
+
+  if (!userRows) return;
+
+  userRows.innerHTML = state.users.map(u =>
     "<tr><td><strong>" + escapeHTML(u.Name) + "</strong></td><td>" + escapeHTML(u.Role) + "</td><td>" +
     escapeHTML(u.Email || "—") + '</td><td><span class="pill ' + (u.Status === "Active" ? "success" : "warning") + '">' +
     escapeHTML(u.Status || "Active") + "</span></td></tr>"
@@ -423,10 +476,17 @@ async function boot() {
       // refresh); only fall back to demo data when there is nothing to keep.
       if (!state.aircraft.length && !state.facilities.length) loadDemo();
       setStatus(false, "Offline — API unreachable");
-      document.getElementById("offlineReason").textContent = "Reason: " + err.message;
+      const offlineReason = document.getElementById("offlineReason");
+      if (offlineReason) {
+        offlineReason.textContent = "Reason: " + err.message;
+      }
       setConnPanel("error", null,
         "The Web App URL is set but could not be reached (" + err.message + "). Check that the deployment exists, access is 'Anyone', and that you deployed the latest version. The data below may be stale.");
-      document.getElementById("settingsApiInfo").textContent = "API error: " + err.message + ".";
+      
+      const settingsApiInfo = document.getElementById("settingsApiInfo");
+      if (settingsApiInfo) {
+        settingsApiInfo.textContent = "API error: " + err.message + ".";
+      }
     }
   } else {
     loadDemo();
@@ -516,3 +576,133 @@ loginForm.addEventListener("submit", function(e) {
     "Invalid email or password. Please try again.";
 }
 });
+
+// Click SafeHangar logo to return to Dashboard
+const brandHome = document.getElementById("brandHome");
+
+if (brandHome) {
+  brandHome.addEventListener("click", () => {
+    showPage("dashboard");
+  });
+
+  brandHome.addEventListener("keydown", e => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      showPage("dashboard");
+    }
+  });
+}
+
+// ===============================
+// CAMERA CAPTURE FOR INSPECTIONS
+// AND HAZARD REPORTS
+// ===============================
+
+let cameraStream = null;
+let cameraTargetInput = null;
+
+const cameraModal = document.getElementById("cameraModal");
+const cameraVideo = document.getElementById("cameraVideo");
+const cameraCanvas = document.getElementById("cameraCanvas");
+const capturePhotoBtn = document.getElementById("capturePhotoBtn");
+const closeCameraBtn = document.getElementById("closeCameraBtn");
+
+// Open camera
+document.querySelectorAll(".camera-btn").forEach(button => {
+    button.addEventListener("click", async () => {
+        cameraTargetInput = document.getElementById(
+            button.dataset.cameraTarget
+        );
+
+        try {
+            cameraStream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: "environment" },
+                audio: false
+            });
+
+            cameraVideo.srcObject = cameraStream;
+            cameraModal.classList.remove("hidden");
+
+        } catch (err) {
+            alert("Unable to access camera: " + err.message);
+        }
+    });
+});
+
+// Capture photo
+if (capturePhotoBtn) {
+    capturePhotoBtn.addEventListener("click", () => {
+        if (!cameraTargetInput || !cameraVideo.videoWidth) {
+            alert("Camera is not ready.");
+            return;
+        }
+        
+    cameraCanvas.width = cameraVideo.videoWidth;
+    cameraCanvas.height = cameraVideo.videoHeight;
+
+    const context = cameraCanvas.getContext("2d");
+
+    context.drawImage(
+        cameraVideo,
+        0,
+        0,
+        cameraCanvas.width,
+        cameraCanvas.height
+    );
+
+    cameraCanvas.toBlob(blob => {
+        if (!blob) {
+            alert("Failed to capture photo.");
+            return;
+        }
+
+        const file = new File(
+            [blob],
+            "SafeHangar-" + Date.now() + ".jpg",
+            { type: "image/jpeg" }
+        );
+
+        const transfer = new DataTransfer();
+        transfer.items.add(file);
+
+        cameraTargetInput.files = transfer.files;
+
+        cameraTargetInput.dispatchEvent(
+            new Event("change", { bubbles: true })
+        );
+
+        closeCamera();
+        }, "image/jpeg", 0.90);
+    });
+}
+
+// Close camera
+function closeCamera() {
+    if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+        cameraStream = null;
+    }
+
+    cameraVideo.srcObject = null;
+    cameraModal.classList.add("hidden");
+}
+
+// Cancel button
+if (closeCameraBtn) {
+    closeCameraBtn.addEventListener("click", closeCamera);
+}
+
+function updateDashboardDate() {
+    const dateElement = document.getElementById("dashboardDate");
+
+    if (!dateElement) return;
+
+    dateElement.textContent = new Date().toLocaleDateString("en-US", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+    });
+}
+
+updateDashboardDate();

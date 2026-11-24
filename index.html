@@ -92,15 +92,19 @@
 <div id="dashboardApp" style="display:none">
   <!-- Your existing sidebar, dashboard, pages and footer go here -->
   <aside class="sidebar">
-    <div class="brand">
-      <img class="brand-logo" src="assets/logo.png" alt="SafeHangar logo" width="46" height="46">
-      <div><strong>SAFEHANGAR</strong><small>AIRCRAFT SAFETY SYSTEM</small></div>
+    <div class="brand" id="brandHome" role="button" tabindex="0" title="Go to Dashboard">
+    <img src="assets/logo.png" class="brand-logo">
+    <div>
+        <strong>SAFEHANGAR</strong>
+        <small>AIRCRAFT SAFETY SYSTEM</small>
     </div>
+</div>
     <nav>
       <p class="nav-label">WORKSPACE</p>
       <a class="nav-link active" href="#dashboard" data-page="dashboard">▦ <span>Dashboard</span></a>
       <a class="nav-link" href="#aircraft" data-page="aircraft">✈ <span>Aircraft</span></a>
       <a class="nav-link" href="#inspections" data-page="inspections">☑ <span>Inspections</span></a>
+      <a class="nav-link" href="#recent-inspections" data-page="recent-inspections">◷ <span>Recent Inspections</span></a>
       <a class="nav-link" href="#reports" data-page="reports">▤ <span>Reports</span></a>
       <a class="nav-link" href="#hazards" data-page="hazards">⚠ <span>Hazard Reports</span></a>
       <a class="nav-link" href="#facilities" data-page="facilities">⌂ <span>Hangar Directory</span></a>
@@ -120,7 +124,11 @@
 
     <section id="dashboard" class="page active-page">
       <div class="welcome">
-        <div><span class="eyebrow light">SUNDAY, NOVEMBER 15, 2026</span><h2>Welcome back, Admin.</h2><p>Here is the current overview of your hangar inspection activities.</p></div>
+        <div>
+          <p id="dashboardDate"></p>
+          <h2>Welcome back, Admin.</h2>
+          <p>Here is the current overview of your hangar inspection activities.</p>
+        </div>
         <button class="primary-btn" onclick="showPage('inspections')">＋ New inspection</button>
       </div>
       <div class="stat-grid">
@@ -132,23 +140,7 @@
       <div class="content-grid">
         <article class="panel">
           <div class="panel-heading"><div><h3>Recent inspections</h3><p>Latest aircraft inspection records</p></div><button class="text-btn" onclick="showPage('inspections')">View all →</button></div>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>AIRCRAFT</th>
-                  <th>INSPECTION TYPE</th>
-                  <th>DATE</th><th>STATUS</th>
-                </tr>
-              </thead>
-              <tbody id="recentRows"></tbody>
-            </table>
-          </div>
-
-            <tr><td><strong>RP-C1234</strong><small>Cessna 172</small></td><td>Pre-flight check</td><td>Nov 15, 2026</td><td><span class="pill success">Passed</span></td></tr>
-            <tr><td><strong>RP-C5678</strong><small>Piper PA-28</small></td><td>Engine inspection</td><td>Nov 14, 2026</td><td><span class="pill warning">Needs review</span></td></tr>
-            <tr><td><strong>RP-C9012</strong><small>Cessna 152</small></td><td>Structural check</td><td>Nov 13, 2026</td><td><span class="pill danger">Failed</span></td></tr>
-          </tbody></table></div>
+          <div class="table-wrap"><table><thead><tr><th>AIRCRAFT</th><th>INSPECTION TYPE</th><th>DATE</th><th>STATUS</th></tr></thead><tbody id="recentRows"></tbody></table></div>
         </article>
         <article class="panel alert-panel"><div class="panel-heading"><div><h3>Safety alerts</h3><p>Items requiring attention</p></div><span class="alert-badge" id="alertBadge">2 OPEN</span></div>
           <div class="alert-item"><span class="alert-symbol red-bg">!</span><div><strong>Engine component requires review</strong><p>RP-C5678 · Engine inspection</p><small>Today, 9:42 AM</small></div></div>
@@ -187,9 +179,29 @@
           <div class="check-row"><strong>Landing gear and tires</strong><select class="result-select"><option>Pass</option><option>Fail</option><option>Needs review</option></select></div>
         </div>
         <label class="wide-label">Findings / remarks<textarea id="remarks" rows="4" placeholder="Describe any observed defects or remarks..."></textarea></label>
-        <label class="wide-label">Attach inspection photo<input id="photo" type="file" accept="image/*"></label>
+        <label>Attach inspection photo</label>
+
+      <div class="photo-options">
+        <label for="inspectionPhoto" class="photo-btn">
+          📁 Choose existing photo
+        </label>
+
+        <input type="file" id="inspectionPhoto" accept="image/*">
+
+        <button type="button" class="photo-btn camera-btn" data-camera-target="inspectionPhoto">
+          📷 Take a photo
+        </button>
+      </div>
+
         <button class="primary-btn" type="submit">Save inspection record</button>
       </form>
+    </section>
+
+    <section id="recent-inspections" class="page">
+      <div class="page-intro"><div><h2>Recent inspections</h2><p>Browse and search previously recorded aircraft inspections.</p></div><button class="primary-btn" onclick="showPage('inspections')">＋ New inspection</button></div>
+      <article class="panel"><div class="panel-heading"><div><h3>Inspection history</h3><p>Latest records first</p></div><input class="search" id="recentInspectionSearch" placeholder="Search aircraft, type, inspector, result..."></div>
+        <div class="table-wrap"><table><thead><tr><th>DATE</th><th>AIRCRAFT</th><th>INSPECTION TYPE</th><th>INSPECTOR</th><th>RESULT</th></tr></thead><tbody id="recentInspectionRows"></tbody></table></div>
+      </article>
     </section>
 
     <section id="reports" class="page"><div class="page-intro"><div><h2>Inspection reports</h2><p>Summary of recorded inspections.</p></div><button class="outline-btn" onclick="window.print()">Print / Save as PDF</button></div><article class="panel"><div class="panel-heading"><div><h3>Inspection history</h3><p>Recent submitted inspection records</p></div></div><div class="table-wrap"><table><thead><tr><th>DATE</th><th>AIRCRAFT</th><th>TYPE</th><th>INSPECTOR</th><th>RESULT</th></tr></thead><tbody id="reportRows"><tr><td>Nov 15, 2026</td><td>RP-C1234</td><td>Pre-flight check</td><td>Sample inspector</td><td><span class="pill success">Passed</span></td></tr></tbody></table></div></article></section>
@@ -209,7 +221,20 @@
         </div>
         <div class="example-box" id="hazardExample" aria-live="polite">Select a category to see an example of what to report.</div>
         <label class="wide-label">Description<textarea id="hazardDescription" rows="4" placeholder="Describe what you saw, who was involved, and any immediate action taken..." required></textarea></label>
-        <label class="wide-label">Attach photo (optional)<input id="hazardPhoto" type="file" accept="image/*"></label>
+        <label>Attach hazard photo</label>
+
+          <div class="photo-options">
+            <label for="hazardPhoto" class="photo-btn">
+              📁 Choose existing photo
+            </label>
+
+            <input type="file" id="hazardPhoto" accept="image/*">
+
+            <button type="button" class="photo-btn camera-btn" data-camera-target="hazardPhoto">
+              📷 Take a photo
+            </button>
+          </div>
+
         <button class="primary-btn" type="submit">Submit hazard report</button>
       </form>
       <article class="panel">
@@ -239,6 +264,30 @@
 
 </div>
 
+<!-- Inspection detail modal -->
+<div id="inspectionDetailModal" class="inspection-modal hidden" role="dialog" aria-modal="true" aria-labelledby="inspectionModalTitle">
+  <div class="inspection-modal-card"><div class="inspection-modal-head"><h2 id="inspectionModalTitle">Inspection details</h2><button type="button" id="closeInspectionModal" class="inspection-modal-close" aria-label="Close">×</button></div><div id="inspectionModalContent"></div></div>
+</div>
+
   <script src="script.js"></script>
+  <!-- Camera Modal -->
+<div id="cameraModal" class="camera-modal hidden">
+    <div class="camera-box">
+        <h3>Take a Photo</h3>
+
+        <video id="cameraVideo" autoplay playsinline></video>
+        <canvas id="cameraCanvas" class="hidden"></canvas>
+
+        <div class="camera-actions">
+            <button type="button" id="capturePhotoBtn" class="photo-btn">
+                Capture Photo
+            </button>
+
+            <button type="button" id="closeCameraBtn" class="photo-btn">
+                Cancel
+            </button>
+        </div>
+    </div>
+</div>
 </body>
 </html>
